@@ -104,7 +104,7 @@ final class ManifestGenerator {
             'PHP.PHP.(version).yaml',
         ];
 
-        if (!is_dir($folder) && !mkdir($folder, 777, true) && !is_dir($folder)) {
+        if (!is_dir($folder) && !mkdir($folder, recursive: true) && !is_dir($folder)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $folder));
         }
 
