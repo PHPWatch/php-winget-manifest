@@ -119,11 +119,15 @@ final class ManifestGenerator {
             '%versionmin%' => str_replace('.', '', $this->version),
         ];
 
-        foreach ($files as $file) {
-            $targetFile = self::BASE_PATH . '/' . $this->version . '/' . str_replace('(version)', $this->version, $file);
-            $file = file_get_contents(self::BASE_PATH . '/templates/' . $file);
-            $file = strtr($file, $replacements);
-            file_put_contents($targetFile, $file);
+        foreach ($files as $fileName) {
+            $targetFile = self::BASE_PATH . '/' . $this->version . '/' . str_replace('(version)', $this->version, $fileName);
+            $fileContents = file_get_contents(self::BASE_PATH . '/templates/' . $fileName);
+            $fileContents = strtr($fileContents, $replacements);
+            file_put_contents($targetFile, $fileContents);
+
+            if (!file_exists($targetFile)) {
+                throw new \RuntimeException('Unable to write to file: '. $targetFile);
+            }
         }
     }
 
