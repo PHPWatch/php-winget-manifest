@@ -20,6 +20,6 @@ Installers:
     InstallerSha256: 5ce2961c410c2d3b5e8f11e21fd88407b10f3c60a7ad904babafd2fa30bb6bf1
   - Architecture: x86
     InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.17-Win32-vs16-x86.zip
-    InstallerSha256: 5ce2961c410c2d3b5e8f11e21fd88407b10f3c60a7ad904babafd2fa30bb6bf1
+    InstallerSha256: 1b93755874016533cdb65ae749e3d250f77700142540d2a8e29c857b9206e9fd
 ManifestType: installer
 ManifestVersion: 1.6.0
