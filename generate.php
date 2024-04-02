@@ -2,6 +2,9 @@
 
 namespace PHPWatch\WingetManifestGenerator;
 
+use Cassandra\Date;
+use DateTime;
+
 final class ManifestGenerator {
 
     private readonly string $version;
@@ -66,9 +69,7 @@ final class ManifestGenerator {
             throw new \RuntimeException('Unable to parse release date.');
         }
 
-        $return['date'] = $matchesDate['date'];
-
-
+        $return['date'] = (DateTime::createFromFormat('Y-M-d', $matchesDate['date']))->format('Y-m-d');
 
         preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X64), $sourceHtml, $matchesUrlx64);
 
