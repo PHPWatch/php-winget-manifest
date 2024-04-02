@@ -1,3 +1,4 @@
-generate.php export-ignore
+*.yaml       text
 .github      export-ignore
 .templates   export-ignore
+generate.php export-ignore
