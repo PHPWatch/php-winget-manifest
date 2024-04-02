@@ -12,7 +12,7 @@ final class ManifestGenerator {
     private const string MATCH_RELEASE_DATE = '~<h4 id="php-%version%-.*?\((?<date>20\d\d-...-\d\d).*?\)</h4>~s';
     private const string MATCH_RELEASE_VERSION = '~<h3 id="php-%version%" name="php-%version%" class="summary entry-title">PHP %version% \((?<version>.*?)\)</h3>~s';
     private const string MATCH_DOWNLOAD_URL_X64 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs16|VC15)-x64\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
-    private const string MATCH_DOWNLOAD_URL_X86 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs16|VC15)-x64\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
+    private const string MATCH_DOWNLOAD_URL_X86 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs16|VC15)-x86\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
 
     public static function getHelp(): string {
         $help = [];
