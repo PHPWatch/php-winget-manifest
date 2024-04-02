@@ -98,9 +98,9 @@ final class ManifestGenerator {
     private function saveManifests(array $data): void {
         $folder = self::BASE_PATH . '/' . $this->version;
         $files = [
-            'PHP.PHP.--version--.installer.yaml',
-            'PHP.PHP.--version--.locale.en-US.yaml',
-            'PHP.PHP.--version--.yaml',
+            'PHP.PHP.(version).installer.yaml',
+            'PHP.PHP.(version).locale.en-US.yaml',
+            'PHP.PHP.(version).yaml',
         ];
 
         if (!is_dir($folder) && !mkdir($folder, 777, true) && !is_dir($folder)) {
@@ -119,7 +119,7 @@ final class ManifestGenerator {
         ];
 
         foreach ($files as $file) {
-            $targetFile = self::BASE_PATH . '/' . $this->version . '/' . str_replace('--version--', $this->version, $file);
+            $targetFile = self::BASE_PATH . '/' . $this->version . '/' . str_replace('(version)', $this->version, $file);
             $file = file_get_contents(self::BASE_PATH . '/templates/' . $file);
             $file = strtr($file, $replacements);
             file_put_contents($targetFile, $file);
