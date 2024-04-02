@@ -5,6 +5,10 @@ PackageIdentifier: PHP.PHP.8.0
 PackageVersion: 8.0.30
 InstallerLocale: en-US
 InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: php.exe
+    PortableCommandAlias: php
 Commands:
   - php
   - php80
@@ -12,18 +16,10 @@ UpgradeBehavior: install
 ReleaseDate: 2023-09-01
 Installers:
   - Architecture: x64
-    NestedInstallerType: portable
     InstallerUrl: https://windows.php.net/downloads/releases/php-8.0.30-Win32-vs16-x64.zip
     InstallerSha256: 8697972b5f704885e3444422ede2b5c25d025f614ea96dc67de74dc582471562
-    NestedInstallerFiles:
-      - RelativeFilePath: php.exe
-        PortableCommandAlias: php
   - Architecture: x86
     InstallerUrl: https://windows.php.net/downloads/releases/php-8.0.30-Win32-vs16-x86.zip
     InstallerSha256: 8697972b5f704885e3444422ede2b5c25d025f614ea96dc67de74dc582471562
-    NestedInstallerFiles:
-      - RelativeFilePath: php.exe
-        PortableCommandAlias: php
-
 ManifestType: installer
-ManifestVersion: 1.5.0
+ManifestVersion: 1.6.0

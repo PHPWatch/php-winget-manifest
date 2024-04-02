@@ -5,6 +5,10 @@ PackageIdentifier: PHP.PHP.%version%
 PackageVersion: %fullversion%
 InstallerLocale: en-US
 InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: php.exe
+    PortableCommandAlias: php
 Commands:
   - php
   - php%versionmin%
@@ -12,18 +16,10 @@ UpgradeBehavior: install
 ReleaseDate: %releasedate%
 Installers:
   - Architecture: x64
-    NestedInstallerType: portable
     InstallerUrl: %url-x64%
     InstallerSha256: %hash-x64%
-    NestedInstallerFiles:
-      - RelativeFilePath: php.exe
-        PortableCommandAlias: php
   - Architecture: x86
     InstallerUrl: %url-x86%
     InstallerSha256: %hash-x64%
-    NestedInstallerFiles:
-      - RelativeFilePath: php.exe
-        PortableCommandAlias: php
-
 ManifestType: installer
-ManifestVersion: 1.5.0
+ManifestVersion: 1.6.0

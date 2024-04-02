@@ -3,6 +3,7 @@
 
 PackageIdentifier: PHP.PHP.8.2
 Description: "PHP (recursive acronym for PHP: Hypertext Preprocessor) is a widely-used open source general-purpose scripting language that is especially suited for web development and can be embedded into HTML."
+ShortDescription: PHP 8.2
 PackageVersion: 8.2.17
 ReleaseNotesUrl: https://www.php.net/ChangeLog-8.php#8.2.17
 PackageLocale: en-US
@@ -21,4 +22,4 @@ Tags:
   - php
   - php82
 ManifestType: defaultLocale
-ManifestVersion: 1.5.0
+ManifestVersion: 1.6.0
