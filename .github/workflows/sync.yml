@@ -31,7 +31,7 @@ jobs:
 
       - name: Generate commit message
         id: commit_msg
-        run: echo "commit_msg=$(date +"%Y %b %d")" >> "$GITHUB_OUTPUT"
+        run: echo "commit_msg=$(date +"%Y.%m.%d")" >> "$GITHUB_OUTPUT"
 
       - name: Commit data
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -39,3 +39,4 @@ jobs:
           commit_message: Automatic updates - ${{ steps.commit_msg.outputs.commit_msg }}
           branch: main
           add_options: '-A'
+          tagging_message: ${{ steps.commit_msg.outputs.commit_msg }}
