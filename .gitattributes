@@ -1,4 +1,5 @@
 *.yaml       text
 .github      export-ignore
+.gitignore   export-ignore
 .templates   export-ignore
 generate.php export-ignore

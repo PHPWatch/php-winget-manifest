@@ -1,0 +1,41 @@
+name: Sync PHP Package Versions
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: "20 4 * * *"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: Update version info
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@verbose
+        with:
+          php-version: '8.3'
+
+      - name: "Update version info"
+        run: |
+          php generate.php 8.0
+          php generate.php 8.1
+          php generate.php 8.2
+          php generate.php 8.3
+
+      - name: List dirs
+        run: find . | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+
+      - name: Generate commit message
+        id: commit_msg
+        run: echo "commit_msg=$(date +"%Y %b %d")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Automatic updates - ${{ steps.commit_msg.outputs.commit_msg }}
+          branch: main
+          add_options: '-A'
