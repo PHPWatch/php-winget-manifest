@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.6.0.schema.json
 
 PackageIdentifier: PHP.PHP.8.3
-PackageVersion: 8.3.7
+PackageVersion: 8.3.8
 InstallerLocale: en-US
 InstallerType: zip
 NestedInstallerType: portable
@@ -13,13 +13,13 @@ Commands:
   - php
   - php83
 UpgradeBehavior: install
-ReleaseDate: 2024-05-08
+ReleaseDate: 2024-06-04
 Installers:
   - Architecture: x64
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.3.7-Win32-vs16-x64.zip
-    InstallerSha256: 6460492c571d24c4409208e112cb7a741352e278a8f9a5cd604562eb22929bd9
+    InstallerUrl: https://windows.php.net/downloads/releases/php-8.3.8-Win32-vs16-x64.zip
+    InstallerSha256: 4cd0ccdcf613be57fb5c437a10b6e96c5d69016ec1c7f4c514398a72e36e4006
   - Architecture: x86
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.3.7-Win32-vs16-x86.zip
-    InstallerSha256: c754397c86ef2670e2a2a41e50cc23ac728b08867cdf91a749d15cb8bad4a460
+    InstallerUrl: https://windows.php.net/downloads/releases/php-8.3.8-Win32-vs16-x86.zip
+    InstallerSha256: 668821902e846cd99828cc47646795b73eeb13830aa1acf4258074615972f5c4
 ManifestType: installer
 ManifestVersion: 1.6.0

@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.6.0.schema.json
 
 PackageIdentifier: PHP.PHP.8.2
-PackageVersion: 8.2.19
+PackageVersion: 8.2.20
 InstallerLocale: en-US
 InstallerType: zip
 NestedInstallerType: portable
@@ -13,13 +13,13 @@ Commands:
   - php
   - php82
 UpgradeBehavior: install
-ReleaseDate: 2024-05-08
+ReleaseDate: 2024-06-04
 Installers:
   - Architecture: x64
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.19-Win32-vs16-x64.zip
-    InstallerSha256: f94c42da494dc96fa10d5e0a2a97d422380ea32158be1faa3bb3c86ef50e7597
+    InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.20-Win32-vs16-x64.zip
+    InstallerSha256: ad2636858768864ed4caecf1687f5a827b9c7ceafb28d06072fe2dd703372962
   - Architecture: x86
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.19-Win32-vs16-x86.zip
-    InstallerSha256: fd881cf2694230df501923835e567aef17b7d3fa50f04f6bc8d04b52c4587dd1
+    InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.20-Win32-vs16-x86.zip
+    InstallerSha256: 65ede2d17b24ea703cd7744aa37bbaec5d82e60c61762ce680da3e84cab65b53
 ManifestType: installer
 ManifestVersion: 1.6.0
