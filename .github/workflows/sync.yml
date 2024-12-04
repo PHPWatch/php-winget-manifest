@@ -21,7 +21,6 @@ jobs:
 
       - name: "Update version info"
         run: |
-          php generate.php 8.0
           php generate.php 8.1
           php generate.php 8.2
           php generate.php 8.3
