@@ -97,17 +97,12 @@ final class ManifestGenerator {
     }
 
     private function saveManifests(array $data): void {
-        $folder = self::BASE_PATH . '/' . $this->version;
+        $versionParts = explode('.', $data['version']);
         $files = [
             'PHP.PHP.(version).installer.yaml',
             'PHP.PHP.(version).locale.en-US.yaml',
             'PHP.PHP.(version).yaml',
         ];
-
-        if (!is_dir($folder) && !mkdir($folder, recursive: true) && !is_dir($folder)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $folder));
-        }
-
         $replacements = [
             '%version%' => $this->version,
             '%releasedate%' => $data['date'],
@@ -117,11 +112,22 @@ final class ManifestGenerator {
             '%url-x86%' => $data['x86']['url'],
             '%hash-x86%' => $data['x86']['hash'],
             '%versionmin%' => str_replace('.', '', $this->version),
+            '%versionmajor%' => $versionParts[0],
+            '%versionminor%' => $versionParts[1],
         ];
 
+        $folder = self::BASE_PATH . '/PHP/PHP/%versionmajor%/%versionminor%/%fullversion%';
+        $folder = strtr($folder, $replacements);
+
+        if (!is_dir($folder) && !mkdir($folder, recursive: true) && !is_dir($folder)) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $folder));
+        }
+
         foreach ($files as $fileName) {
-            $targetFile = self::BASE_PATH . '/' . $this->version . '/' . str_replace('(version)', $this->version, $fileName);
+            $targetFile = $folder . '/' . $fileName;
             $fileContents = file_get_contents(self::BASE_PATH . '/templates/' . $fileName);
+
+            $targetFile = strtr($targetFile, $replacements + ['(version)' => $this->version]);
             $fileContents = strtr($fileContents, $replacements);
             file_put_contents($targetFile, $fileContents);
 
