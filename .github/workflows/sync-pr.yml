@@ -81,9 +81,6 @@ jobs:
           echo "$EOF" >> $GITHUB_OUTPUT
           echo "--New Version--"
           echo ${{ steps.version_update.outputs.new_version }}
-          echo "${{ steps.version_update.outputs.new_version }}" | wc -c
-          echo "-${{ steps.version_update.outputs.new_version }}-" | wc -c
-          echo "-${{ steps.version_update.outputs.new_version }}-"
 
       - name: Remove old files from winget-pkgs
         if: contains('none', steps.version_update.outputs.new_version) == false
@@ -91,7 +88,7 @@ jobs:
           rm -r winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
           cp -r builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
 
-      - name: Commit data
+      - name: Commit data to own repo
         uses: stefanzweifel/git-auto-commit-action@v5
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
@@ -99,7 +96,7 @@ jobs:
           branch: main
           add_options: '-A'
           repository: builder
-          tagging_message: ${{ steps.commit_msg.outputs.commit_msg }}
+          tagging_message: ${{ steps.version_update.outputs.new_version }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
