@@ -116,7 +116,8 @@ final class ManifestGenerator {
             '%versionminor%' => $versionParts[1],
         ];
 
-        $folder = self::BASE_PATH . '/PHP/PHP/%versionmajor%/%versionminor%/%fullversion%';
+        // manifests/p/PHP/PHP/8/3/8.3.14/PHP.PHP.8.3.installer.yaml
+        $folder = self::BASE_PATH . '/manifests/p/PHP/PHP/%versionmajor%/%versionminor%/%fullversion%';
         $folder = strtr($folder, $replacements);
 
         if (!is_dir($folder) && !mkdir($folder, recursive: true) && !is_dir($folder)) {
