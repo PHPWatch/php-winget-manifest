@@ -1,10 +1,14 @@
 Updates `PHP.PHP.%versionmajor%.%versionminor%` to PHP `%fullversion%`
 
+---
+
 **PHP %fullversion%**
-Download x86: %url-x86%
-Checksum x86: %hash-x86%
-Download x64: %url-x64%
-Checksum x64: %hash-x64%
+x86 zip Download: %url-x86%
+x86 zip checksum: `%hash-x86%`
+x64 zip Download: %url-x64%
+x64 zip Checksum: `%hash-x64%`
+
+---
 
 Checklist for Pull Requests
 - [x] Have you signed the [Contributor License Agreement](https://cla.opensource.microsoft.com/microsoft/winget-pkgs)?

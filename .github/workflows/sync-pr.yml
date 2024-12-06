@@ -1,11 +1,15 @@
 name: Sync and PR
+
 permissions:
   contents: write
+  id-token: write
+  attestations: write
+
 on:
   workflow_dispatch:
   workflow_call:
   schedule:
-    - cron: "20 4,8,12,16,20 * * *"
+    - cron: "*/30 * * * *"
 
 jobs:
   run:
@@ -14,15 +18,15 @@ jobs:
     strategy:
       matrix:
         include:
-#          - php-version: '8.1'
-#            php-version-major: 8
-#            php-version-minor: 1
-#          - php-version: '8.2'
-#            php-version-major: 8
-#            php-version-minor: 2
-#          - php-version: '8.3'
-#            php-version-major: 8
-#            php-version-minor: 3
+          - php-version: '8.1'
+            php-version-major: 8
+            php-version-minor: 1
+          - php-version: '8.2'
+            php-version-major: 8
+            php-version-minor: 2
+          - php-version: '8.3'
+            php-version-major: 8
+            php-version-minor: 3
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
@@ -44,7 +48,12 @@ jobs:
           else
             echo "new_version=none" >> $GITHUB_OUTPUT
           fi
-          
+
+      - name: Add job summary when new releases are found
+        if: contains('none', steps.version_update.outputs.new_version) == true
+        run: |
+          echo 'No new releases found.' >> $GITHUB_STEP_SUMMARY
+
       - name: Clone PHPWatch/winget-pkgs
         uses: actions/checkout@v4
         if: contains('none', steps.version_update.outputs.new_version) == false
@@ -71,6 +80,12 @@ jobs:
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: find winget-pkgs/manifests/p/PHP/PHP | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
 
+      - uses: actions/attest-build-provenance@v2
+        id: attest
+        name: Attest manifest file
+        with:
+          subject-path: builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+
       - name: Generate commit message
         id: commit_msg
         if: contains('none', steps.version_update.outputs.new_version) == false
@@ -79,11 +94,15 @@ jobs:
           echo "commit_msg<<$EOF" >> $GITHUB_OUTPUT
           cat builder/winget-commit-message.md >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
-          echo "--New Version--"
-          echo ${{ steps.version_update.outputs.new_version }}
-          echo "${{ steps.version_update.outputs.new_version }}" | wc -c
-          echo "-${{ steps.version_update.outputs.new_version }}-" | wc -c
-          echo "-${{ steps.version_update.outputs.new_version }}-"
+
+          echo "## New Version" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.version_update.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
+
+          echo "## Commit message" >> $GITHUB_STEP_SUMMARY
+          cat builder/winget-commit-message.md >> $GITHUB_STEP_SUMMARY
+
+          echo "## PR Content" >> $GITHUB_STEP_SUMMARY
+          cat builder/winget-pr-template.md >> $GITHUB_STEP_SUMMARY
 
       - name: Remove old files from winget-pkgs
         if: contains('none', steps.version_update.outputs.new_version) == false
@@ -91,7 +110,7 @@ jobs:
           rm -r winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
           cp -r builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
 
-      - name: Commit data
+      - name: Commit data to own repo
         uses: stefanzweifel/git-auto-commit-action@v5
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
@@ -99,9 +118,10 @@ jobs:
           branch: main
           add_options: '-A'
           repository: builder
-          tagging_message: ${{ steps.commit_msg.outputs.commit_msg }}
+          tagging_message: ${{ steps.version_update.outputs.new_version }}
 
       - name: Create Pull Request
+        id: create_pr
         uses: peter-evans/create-pull-request@v7
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
@@ -110,7 +130,13 @@ jobs:
           body-path: builder/winget-pr-template.md
           add-paths: "manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}"
           commit-message: ${{ steps.commit_msg.outputs.commit_msg }}
-          title: "[PHP] Add new version ${{ matrix.php-version-major }}.${{ matrix.php-version-minor }}"
+          title: "[PHP] Add new version `PHP.PHP.${{ matrix.php-version-major }}.${{ matrix.php-version-minor }}` - `${{ steps.version_update.outputs.new_version }}`"
           committer: "Ayesh Karunaratne <ayesh@aye.sh>"
           author: "Ayesh Karunaratne <ayesh@aye.sh>"
-          branch: "php-version-${{ matrix.php-version-major }}-${{ matrix.php-version-minor }}"
+          branch: "php-v-${{ steps.version_update.outputs.new_version }}"
+
+      - name: Add Pull request information
+        if: ${{ steps.create_pr.outputs.pull-request-url }}
+        run: |
+          echo "## PR ${{ steps.create_pr.outputs.pull-request-operation }}" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.create_pr.outputs.pull-request-url }}" >> $GITHUB_STEP_SUMMARY
