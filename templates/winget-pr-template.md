@@ -1,0 +1,20 @@
+Updates `PHP.PHP.%versionmajor%.%versionminor%` to PHP `%fullversion%`
+
+**PHP %fullversion%**
+Download x86: %url-x86%
+Checksum x86: %hash-x86%
+Download x64: %url-x64%
+Checksum x64: %hash-x64%
+
+Checklist for Pull Requests
+- [x] Have you signed the [Contributor License Agreement](https://cla.opensource.microsoft.com/microsoft/winget-pkgs)?
+- [ ] Is there a linked Issue?
+
+Manifests
+- [x] Have you checked that there aren't other open [pull requests](https://github.com/microsoft/winget-pkgs/pulls) for the same manifest update/change?
+- [x] This PR only modifies one (1) manifest
+- [x] Have you [validated](https://github.com/microsoft/winget-pkgs/blob/master/doc/Authoring.md#validation) your manifest locally with `winget validate --manifest <path>`?
+- [x] Have you tested your manifest locally with `winget install --manifest <path>`?
+- [x] Does your manifest conform to the [1.9 schema](https://github.com/microsoft/winget-pkgs/tree/master/doc/manifest/schema/1.9.0)?
+
+---

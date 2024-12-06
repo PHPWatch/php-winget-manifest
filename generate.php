@@ -14,6 +14,8 @@ final class ManifestGenerator {
     private const string MATCH_DOWNLOAD_URL_X64 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs17|vs16|VC15)-x64\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
     private const string MATCH_DOWNLOAD_URL_X86 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs17|vs16|VC15)-x86\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
 
+    private ?string $newVersion = null;
+
     public static function getHelp(): string {
         $help = [];
         $help[] = '== PHP Winget Manifest Builder ==';
@@ -42,6 +44,21 @@ final class ManifestGenerator {
     public function run(): void {
         $matches = $this->getAndParseInfo();
         $this->saveManifests($matches);
+    }
+
+    public function showNewVersion(): void {
+        if ($this->newVersion) {
+            echo $this->newVersion;
+        }
+    }
+
+    public function setNewVersionToEnv(): void {
+        if ($this->newVersion) {
+            putenv('PHP_NEW_VERSION=' . $this->version);
+        }
+        else {
+            putenv('PHP_NEW_VERSION=0');
+        }
     }
 
     private function getAndParseInfo(): array {
@@ -98,11 +115,6 @@ final class ManifestGenerator {
 
     private function saveManifests(array $data): void {
         $versionParts = explode('.', $data['version']);
-        $files = [
-            'PHP.PHP.(version).installer.yaml',
-            'PHP.PHP.(version).locale.en-US.yaml',
-            'PHP.PHP.(version).yaml',
-        ];
         $replacements = [
             '%version%' => $this->version,
             '%releasedate%' => $data['date'],
@@ -120,12 +132,24 @@ final class ManifestGenerator {
         $folder = self::BASE_PATH . '/manifests/p/PHP/PHP/%versionmajor%/%versionminor%/%fullversion%';
         $folder = strtr($folder, $replacements);
 
+        $files = [
+            'PHP.PHP.(version).installer.yaml' => $folder . '/' . 'PHP.PHP.(version).installer.yaml',
+            'PHP.PHP.(version).locale.en-US.yaml' => $folder . '/' . 'PHP.PHP.(version).locale.en-US.yaml',
+            'PHP.PHP.(version).yaml' => $folder . '/' . 'PHP.PHP.(version).yaml',
+            'winget-commit-message.md' => __DIR__ . '/winget-commit-message.md',
+            'winget-pr-template.md' => __DIR__ . '/winget-pr-template.md',
+        ];
+
+        $isNewVersion = !is_dir($folder);
+        if ($isNewVersion) {
+            $this->newVersion = $data['fullversion'];
+        }
+
         if (!is_dir($folder) && !mkdir($folder, recursive: true) && !is_dir($folder)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $folder));
         }
 
-        foreach ($files as $fileName) {
-            $targetFile = $folder . '/' . $fileName;
+        foreach ($files as $fileName => $targetFile) {
             $fileContents = file_get_contents(self::BASE_PATH . '/templates/' . $fileName);
 
             $targetFile = strtr($targetFile, $replacements + ['(version)' => $this->version]);
@@ -135,6 +159,15 @@ final class ManifestGenerator {
             if (!file_exists($targetFile)) {
                 throw new \RuntimeException('Unable to write to file: '. $targetFile);
             }
+        }
+    }
+
+    public function saveNewVersionToFile(string $file): void {
+        if (file_exists($file)) {
+            unlink($file);
+        }
+        if ($this->newVersion) {
+            file_put_contents($file, $this->newVersion);
         }
     }
 
@@ -181,6 +214,9 @@ $ver = $argv[1];
 try {
     $runner = new ManifestGenerator($ver);
     $runner->run();
+    $runner->showNewVersion();
+    $runner->setNewVersionToEnv();
+    $runner->saveNewVersionToFile(__DIR__ . '/NEW_VERSION');
 }
 catch (\Exception $exception) {
     echo $exception->getMessage();

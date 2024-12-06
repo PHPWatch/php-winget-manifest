@@ -1,0 +1,116 @@
+name: Sync and PR
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: "20 4,8,12,16,20 * * *"
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    name: PHP ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        include:
+#          - php-version: '8.1'
+#            php-version-major: 8
+#            php-version-minor: 1
+#          - php-version: '8.2'
+#            php-version-major: 8
+#            php-version-minor: 2
+#          - php-version: '8.3'
+#            php-version-major: 8
+#            php-version-minor: 3
+          - php-version: '8.4'
+            php-version-major: 8
+            php-version-minor: 4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: builder
+
+      - name: Update version info
+        id: version_update
+        run: |
+          cd builder
+          php generate.php ${{ matrix.php-version }}
+          cat winget-commit-message.md
+          cat winget-pr-template.md
+          if [[ -f "NEW_VERSION" ]]; then
+            echo "new_version=$(cat NEW_VERSION)" >> $GITHUB_OUTPUT
+          else
+            echo "new_version=none" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Clone PHPWatch/winget-pkgs
+        uses: actions/checkout@v4
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        with:
+          repository: PHPWatch/winget-pkgs
+          path: winget-pkgs
+          token: ${{ secrets.PKGS_TOKEN }}
+          sparse-checkout: |
+            manifests/p/PHP
+
+      - name: Sync fork
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        run: |
+          cd winget-pkgs
+          git remote add upstream https://github.com/microsoft/winget-pkgs.git
+          git pull upstream master
+          git push origin master
+          cd ../
+
+      - name: "List dirs: generated"
+        run: find builder/manifests | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+
+      - name: "List dirs: Upstream"
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        run: find winget-pkgs/manifests/p/PHP/PHP | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+
+      - name: Generate commit message
+        id: commit_msg
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "commit_msg<<$EOF" >> $GITHUB_OUTPUT
+          cat builder/winget-commit-message.md >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+          echo "--New Version--"
+          echo ${{ steps.version_update.outputs.new_version }}
+          echo "${{ steps.version_update.outputs.new_version }}" | wc -c
+          echo "-${{ steps.version_update.outputs.new_version }}-" | wc -c
+          echo "-${{ steps.version_update.outputs.new_version }}-"
+
+      - name: Remove old files from winget-pkgs
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        run: |
+          rm -r winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+          cp -r builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+
+      - name: Commit data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        with:
+          commit_message: ${{ steps.commit_msg.outputs.commit_msg }}
+          branch: main
+          add_options: '-A'
+          repository: builder
+          tagging_message: ${{ steps.commit_msg.outputs.commit_msg }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        with:
+          token: ${{ secrets.PKGS_TOKEN }}
+          path: "winget-pkgs"
+          body-path: builder/winget-pr-template.md
+          add-paths: "manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}"
+          commit-message: ${{ steps.commit_msg.outputs.commit_msg }}
+          title: "[PHP] Add new version ${{ matrix.php-version-major }}.${{ matrix.php-version-minor }}"
+          committer: "Ayesh Karunaratne <ayesh@aye.sh>"
+          author: "Ayesh Karunaratne <ayesh@aye.sh>"
+          branch: "php-version-${{ matrix.php-version-major }}-${{ matrix.php-version-minor }}"
