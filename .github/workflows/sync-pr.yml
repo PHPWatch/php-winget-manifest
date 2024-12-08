@@ -81,7 +81,7 @@ jobs:
         run: find winget-pkgs/manifests/p/PHP/PHP | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
 
       - uses: actions/attest-build-provenance@v2
-        if: contains('none', steps.version_update.outputs.new_version) == true
+        if: contains('none', steps.version_update.outputs.new_version) == false
         id: attest
         name: Attest manifest file
         with:
