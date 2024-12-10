@@ -90,9 +90,9 @@ jobs:
       - name: Add attest information
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: |
-          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-commit-message.md
-          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-pr-template.md
-          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/"
+          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s).\n\n" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-commit-message.md
+          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s).\n\n" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-pr-template.md
+          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s).\n\n" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/"
           cat builder/winget-commit-message.md
           cat builder/winget-pr-template.md
 
