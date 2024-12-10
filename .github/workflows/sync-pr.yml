@@ -93,6 +93,8 @@ jobs:
           printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-commit-message.md
           printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-pr-template.md
           printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/"
+          cat builder/winget-commit-message.md
+          cat builder/winget-pr-template.md
 
       - name: Generate commit message
         id: commit_msg
