@@ -80,12 +80,19 @@ jobs:
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: find winget-pkgs/manifests/p/PHP/PHP | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
 
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v2.1.0
         if: contains('none', steps.version_update.outputs.new_version) == false
         id: attest
         name: Attest manifest file
         with:
           subject-path: builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+
+      - name: Add attest information
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        run: |
+          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-commit-message.md
+          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/" >> builder/winget-pr-template.md
+          printf "\n###### Manifest built [automatically](%s) and [attested](%s) by [PHPWatch/php-winget-manifest](%s)." "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "${{ steps.attest.outputs.attestation-url }}" "https://github.com/PHPWatch/php-winget-manifest/"
 
       - name: Generate commit message
         id: commit_msg
