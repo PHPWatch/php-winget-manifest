@@ -98,7 +98,7 @@ jobs:
         id: commit_msg
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | xxd -p)
           echo "commit_msg<<$EOF" >> $GITHUB_OUTPUT
           cat builder/winget-commit-message.md >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
