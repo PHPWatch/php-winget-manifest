@@ -150,7 +150,7 @@ jobs:
           token: ${{ secrets.PKGS_TOKEN }}
           path: "winget-pkgs"
           body-path: builder/winget-pr-template.md
-          add-paths: "manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}"
+          add-paths: "manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}/${{ steps.version_update.outputs.new_version }}"
           commit-message: ${{ steps.commit_msg.outputs.commit_msg }}
           title: "[PHP] Add new version `PHP.PHP.${{ matrix.php-version-major }}.${{ matrix.php-version-minor }}` - `${{ steps.version_update.outputs.new_version }}`"
           committer: "Ayesh Karunaratne <ayesh@aye.sh>"
