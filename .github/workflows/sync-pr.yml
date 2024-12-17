@@ -69,7 +69,7 @@ jobs:
         run: |
           cd winget-pkgs
           git remote add upstream https://github.com/microsoft/winget-pkgs.git
-          git pull upstream master
+          git pull upstream master --ff-only
           git push origin master
           cd ../
 
