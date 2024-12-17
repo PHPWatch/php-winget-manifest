@@ -19,9 +19,8 @@ jobs:
   run:
     runs-on: ubuntu-24.04
     name: PHP ${{ matrix.php-version }}
-    concurrency:
-      group: run
     strategy:
+      max-parallel: 1
       matrix:
         include:
           - php-version: '8.1'
@@ -125,6 +124,13 @@ jobs:
         run: |
           rm -r winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
           cp -r builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+
+      - name: Fast-forward own repo
+        if: contains('none', steps.version_update.outputs.new_version) == false
+        run: |
+          cd builder
+          git pull --ff-only
+          cd ../
 
       - name: Commit data to own repo
         uses: stefanzweifel/git-auto-commit-action@v5
