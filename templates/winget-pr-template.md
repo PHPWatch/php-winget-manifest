@@ -8,6 +8,8 @@ x86 zip checksum: `%hash-x86%`
 x64 zip Download: %url-x64%
 x64 zip Checksum: `%hash-x64%`
 
+Info: [PHP %versionmajor%.%versionminor%](https://windows.php.net/download#php-%versionmajor%.%versionminor%) - [PHP %fullversion%](https://php.watch/versions/%versionmajor%.%versionminor%/releases/%fullversion%#download-windows) - [php/php-src %fullversion%](https://github.com/php/php-src/releases/tag/php-%fullversion%)
+
 ---
 
 Checklist for Pull Requests
