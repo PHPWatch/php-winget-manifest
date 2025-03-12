@@ -14,7 +14,7 @@ Author: PHP Group
 PackageName: PHP %version%
 PackageUrl: https://php.net
 License: PHP License v3.01
-LicenseUrl: http://www.php.net/license/3_01.txt
+LicenseUrl: https://www.php.net/license/3_01.txt
 Copyright: (c) PHP Group
 CopyrightUrl: https://www.php.net/credits.php
 Moniker: php%version%
