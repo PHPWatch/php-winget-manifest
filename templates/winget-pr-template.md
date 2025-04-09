@@ -21,6 +21,6 @@ Manifests
 - [x] This PR only modifies one (1) manifest
 - [x] Have you [validated](https://github.com/microsoft/winget-pkgs/blob/master/doc/Authoring.md#validation) your manifest locally with `winget validate --manifest <path>`?
 - [x] Have you tested your manifest locally with `winget install --manifest <path>`?
-- [x] Does your manifest conform to the [1.9 schema](https://github.com/microsoft/winget-pkgs/tree/master/doc/manifest/schema/1.9.0)?
+- [x] Does your manifest conform to the [1.10 schema](https://github.com/microsoft/winget-pkgs/tree/master/doc/manifest/schema/1.10.0)?
 
 ---
