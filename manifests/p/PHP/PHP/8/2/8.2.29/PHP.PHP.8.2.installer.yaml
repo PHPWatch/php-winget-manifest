@@ -23,7 +23,7 @@ Installers:
       PackageDependencies:
         - PackageIdentifier: Microsoft.VCRedist.2015+.x64
   - Architecture: x86
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.29-Win32-vs16-x86.zip
+    InstallerUrl: https://downloads.php.net/~windows/releases/php-8.2.29-Win32-vs16-x86.zip
     InstallerSha256: 334244d028ef1b2634a5689d3a57add301afefe70ec7391b80452f8542d7a886
     Dependencies:
       PackageDependencies:
