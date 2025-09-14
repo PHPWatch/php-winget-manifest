@@ -122,7 +122,7 @@ final class ManifestGenerator {
         }
 
         $return['x86'] = [
-            'url' => str_replace('releases//downloads/releases', 'releases', 'https://downloads.php.net/~windows/releases/' . $matchesUrlx86['url']),
+            'url' => 'https://windows.php.net' . $matchesUrlx86['url'],
             'hash' => $matchesUrlx86['sha256'],
         ];
 
