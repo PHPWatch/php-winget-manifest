@@ -2,7 +2,6 @@
 
 namespace PHPWatch\WingetManifestGenerator;
 
-use Cassandra\Date;
 use DateTime;
 
 final class ManifestGenerator {
