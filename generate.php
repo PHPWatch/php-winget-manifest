@@ -6,16 +6,18 @@ use DateTime;
 
 final class ManifestGenerator {
 
-    private readonly string $version;
     private const string BASE_PATH = __DIR__;
     private const string MATCH_RELEASE_DATE = '~<h4 id="php-%version%-.*?\((?<date>20\d\d-...-\d\d).*?\)</h4>~s';
     private const string MATCH_RELEASE_VERSION = '~<h3 id="php-%version%" name="php-%version%" class="summary entry-title">PHP %version% \((?<version>.*?)\)</h3>~s';
     private const string MATCH_DOWNLOAD_URL_X64 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs17|vs16|VC15)-x64\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
+    private const string MATCH_DOWNLOAD_URL_X64_NTS = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-nts-Win32-(?:vs17|vs16|VC15)-x64\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
     private const string MATCH_DOWNLOAD_URL_X86 = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-Win32-(?:vs17|vs16|VC15)-x86\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
+    private const string MATCH_DOWNLOAD_URL_X86_NTS = '~<a href="(?<url>/downloads/releases/php-%version%\.\d\d?-nts-Win32-(?:vs17|vs16|VC15)-x86\.zip)">Zip</a>.*?<span class="md5sum">sha256:\s(?<sha256>[a-z\d]{64})</span>~s';
 
     private ?string $newVersion = null;
 
-    private bool $threadSafety = false;
+    private readonly bool $threadSafety;
+    private readonly string $version;
 
     public static function getHelp(): string {
         $help = [];
@@ -31,6 +33,8 @@ final class ManifestGenerator {
         $help[] = ' - php generate.php 8.3';
         $help[] = ' - php generate.php 8.2';
         $help[] = ' - php generate.php 7.4';
+        $help[] = ' - php generate.php 7.4 nts';
+        $help[] = ' - php generate.php 7.4 ts';
 
         return implode(PHP_EOL, $help);
     }
@@ -90,7 +94,12 @@ final class ManifestGenerator {
 
         $return['date'] = (DateTime::createFromFormat('Y-M-d', $matchesDate['date']))->format('Y-m-d');
 
-        preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X64), $sourceHtml, $matchesUrlx64);
+        if ($this->threadSafety) {
+            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X64), $sourceHtml, $matchesUrlx64);
+        }
+        else {
+            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X64_NTS), $sourceHtml, $matchesUrlx64);
+        }
 
         if (empty($matchesUrlx64['url']) || empty($matchesUrlx64['sha256'])) {
             throw new \RuntimeException('Unable to parse x64 URL and hash');
@@ -101,7 +110,12 @@ final class ManifestGenerator {
             'hash' => $matchesUrlx64['sha256'],
         ];
 
-        preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X86), $sourceHtml, $matchesUrlx86);
+        if ($this->threadSafety) {
+            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X86), $sourceHtml, $matchesUrlx86);
+        }
+        else {
+            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X86_NTS), $sourceHtml, $matchesUrlx86);
+        }
 
         if (empty($matchesUrlx86['url']) || empty($matchesUrlx86['sha256'])) {
             throw new \RuntimeException('Unable to parse x86 URL and hash');
@@ -128,16 +142,23 @@ final class ManifestGenerator {
             '%versionmin%' => str_replace('.', '', $this->version),
             '%versionmajor%' => $versionParts[0],
             '%versionminor%' => $versionParts[1],
+            '%ts%' => $this->threadSafety ? 'PHP' : 'PHP-NTS',
+            '%ts-suffix%' => $this->threadSafety ? '' : ' - Non-thread safe',
         ];
 
         // manifests/p/PHP/PHP/8/3/8.3.14/PHP.PHP.8.3.installer.yaml
-        $folder = self::BASE_PATH . '/manifests/p/PHP/PHP/%versionmajor%/%versionminor%/%fullversion%';
-        $folder = strtr($folder, $replacements);
+        $folder = self::BASE_PATH . '/manifests/p/PHP/(ts)/%versionmajor%/%versionminor%/%fullversion%';
+        $folder = strtr(
+            $folder,
+            $replacements + [
+                '(ts)' => $this->threadSafety ? 'PHP' : 'PHP-NTS',
+            ]
+        );
 
         $files = [
-            'PHP.PHP.(version).installer.yaml' => $folder . '/' . 'PHP.PHP.(version).installer.yaml',
-            'PHP.PHP.(version).locale.en-US.yaml' => $folder . '/' . 'PHP.PHP.(version).locale.en-US.yaml',
-            'PHP.PHP.(version).yaml' => $folder . '/' . 'PHP.PHP.(version).yaml',
+            'PHP.(ts).(version).installer.yaml' => $folder . '/' . 'PHP.(ts).(version).installer.yaml',
+            'PHP.(ts).(version).locale.en-US.yaml' => $folder . '/' . 'PHP.(ts).(version).locale.en-US.yaml',
+            'PHP.(ts).(version).yaml' => $folder . '/' . 'PHP.(ts).(version).yaml',
             'winget-commit-message.md' => __DIR__ . '/winget-commit-message.md',
             'winget-pr-template.md' => __DIR__ . '/winget-pr-template.md',
         ];
@@ -154,7 +175,14 @@ final class ManifestGenerator {
         foreach ($files as $fileName => $targetFile) {
             $fileContents = file_get_contents(self::BASE_PATH . '/templates/' . $fileName);
 
-            $targetFile = strtr($targetFile, $replacements + ['(version)' => $this->version]);
+            $targetFile = strtr(
+                $targetFile,
+                $replacements + [
+                    '(version)' => $this->version,
+                    '(ts)' => $this->threadSafety ? 'PHP' : 'PHP-NTS',
+                ]
+            );
+
             $fileContents = strtr($fileContents, $replacements);
             file_put_contents($targetFile, $fileContents);
 
@@ -212,9 +240,19 @@ if (empty($argv[1])) {
 }
 
 $ver = $argv[1];
+$ts = true;
+
+if (isset($argv[2])) {
+    if ($argv[2] !== 'ts' && $argv[2] !== 'nts') {
+        echo 'Second argument must be "ts" or "nts"'.PHP_EOL;
+        exit(1);
+    }
+
+    $ts = $argv[2] === 'ts';
+}
 
 try {
-    $runner = new ManifestGenerator($ver);
+    $runner = new ManifestGenerator($ver, $ts);
     $runner->run();
     $runner->showNewVersion();
     $runner->setNewVersionToEnv();

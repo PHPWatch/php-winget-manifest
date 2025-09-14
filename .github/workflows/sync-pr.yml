@@ -22,6 +22,9 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
+        ts:
+          - nts
+          - ts
         include:
           - php-version: '8.1'
             php-version-major: 8
@@ -46,7 +49,7 @@ jobs:
         id: version_update
         run: |
           cd builder
-          php generate.php ${{ matrix.php-version }}
+          php generate.php ${{ matrix.php-version }} ${{ matrix.ts }}
           cat winget-commit-message.md
           cat winget-pr-template.md
           if [[ -f "NEW_VERSION" ]]; then
