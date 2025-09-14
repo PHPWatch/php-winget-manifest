@@ -1,4 +1,4 @@
-[PHP] Update `PHP.PHP.%versionmajor%.%versionminor%` to `%fullversion%`
+[PHP] Update `PHP.%ts%.%versionmajor%.%versionminor%` to `%fullversion%`
 
 Release: https://php.watch/versions/%versionmajor%.%versionminor%/releases/%fullversion%
 Tag: https://github.com/php/php-src/releases/tag/php-%fullversion%

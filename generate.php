@@ -15,6 +15,8 @@ final class ManifestGenerator {
 
     private ?string $newVersion = null;
 
+    private bool $threadSafety = false;
+
     public static function getHelp(): string {
         $help = [];
         $help[] = '== PHP Winget Manifest Builder ==';
@@ -33,11 +35,12 @@ final class ManifestGenerator {
         return implode(PHP_EOL, $help);
     }
 
-    public function __construct(string $version) {
+    public function __construct(string $version, bool $threadSafety = false) {
         if (!preg_match('/^\d\.\d$/', $version)) {
             throw new \InvalidArgumentException('PHP Version must match N.N format', 2);
         }
         $this->version = $version;
+        $this->threadSafety = $threadSafety;
     }
 
     public function run(): void {

@@ -1,4 +1,4 @@
-Updates `PHP.PHP.%versionmajor%.%versionminor%` to PHP `%fullversion%`
+Updates `PHP.%ts%.%versionmajor%.%versionminor%` to PHP `%fullversion%`
 
 ---
 
