@@ -72,58 +72,57 @@ final class ManifestGenerator {
             'version' => $this->version,
         ];
 
-        $source = 'https://windows.php.net/download/';
-        $sourceHtml = file_get_contents($source);
+        $source = 'https://downloads.php.net/~windows/releases/releases.json';
+        $sourceJSON = file_get_contents($source);
 
-        $version = preg_quote($this->version, '~');
+        $releases = json_decode($sourceJSON, flags: JSON_THROW_ON_ERROR);
 
-        preg_match(str_replace('%version%', $version, self::MATCH_RELEASE_VERSION), $sourceHtml, $matchesVersion);
-        if (empty($matchesVersion['version'])) {
-            throw new \RuntimeException('Unable to parse version date.');
+        if (!isset($releases->{$this->version})) {
+            throw new \RuntimeException('Version ' . $this->version . ' not found');
         }
 
-        $return['fullversion'] = $matchesVersion['version'];
+        $releases = $releases->{$this->version};
 
+        $return['fullversion'] = $releases->version;
 
-        preg_match(str_replace('%version%', $version, self::MATCH_RELEASE_DATE), $sourceHtml, $matchesDate);
+        $releaseKey = '/^';
+        $releaseKey .= $this->threadSafety ? 'ts' : 'nts';
+        $releaseKey .= '-(?:vs17|vs16|VC15|vc15)-(?<arch>x86|x64)$/';
 
+        $parsedReleases = [];
+        $releaseDate = null;
 
-        if (empty($matchesDate['date'])) {
+        foreach ($releases as $key => $release) {
+            if (preg_match($releaseKey, $key, $matches)) {
+                $parsedReleases[$matches['arch']] = $release;
+                if (!$releaseDate && isset($release->mtime)) {
+                    $releaseDate = $release->mtime;
+                }
+            }
+        }
+
+        if (empty($releaseDate)) {
             throw new \RuntimeException('Unable to parse release date.');
         }
 
-        $return['date'] = (DateTime::createFromFormat('Y-M-d', $matchesDate['date']))->format('Y-m-d');
+        $return['date'] = date('Y-m-d', strtotime($releaseDate));
 
-        if ($this->threadSafety) {
-            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X64), $sourceHtml, $matchesUrlx64);
-        }
-        else {
-            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X64_NTS), $sourceHtml, $matchesUrlx64);
-        }
 
-        if (empty($matchesUrlx64['url']) || empty($matchesUrlx64['sha256'])) {
+        if (empty($parsedReleases['x64']->zip->path) || empty($parsedReleases['x64']->zip->sha256)) {
             throw new \RuntimeException('Unable to parse x64 URL and hash');
         }
 
-        $return['x64'] = [
-            'url' => 'https://windows.php.net' . $matchesUrlx64['url'],
-            'hash' => $matchesUrlx64['sha256'],
-        ];
-
-        if ($this->threadSafety) {
-            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X86), $sourceHtml, $matchesUrlx86);
-        }
-        else {
-            preg_match(str_replace('%version%', $version, self::MATCH_DOWNLOAD_URL_X86_NTS), $sourceHtml, $matchesUrlx86);
-        }
-
-        if (empty($matchesUrlx86['url']) || empty($matchesUrlx86['sha256'])) {
+        if (empty($parsedReleases['x86']->zip->path) || empty($parsedReleases['x86']->zip->sha256)) {
             throw new \RuntimeException('Unable to parse x86 URL and hash');
         }
 
+        $return['x64'] = [
+            'url' => 'https://downloads.php.net/~windows/releases/' . $parsedReleases['x64']->zip->path,
+            'hash' => $parsedReleases['x64']->zip->sha256,
+        ];
         $return['x86'] = [
-            'url' => 'https://windows.php.net' . $matchesUrlx86['url'],
-            'hash' => $matchesUrlx86['sha256'],
+            'url' => 'https://downloads.php.net/~windows/releases/' . $parsedReleases['x86']->zip->path,
+            'hash' => $parsedReleases['x86']->zip->sha256,
         ];
 
         return $return;
