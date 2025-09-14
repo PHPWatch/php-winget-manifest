@@ -1,8 +1,8 @@
 # Created with PHPWatch/winget-pkgs - https://github.com/PHPWatch/php-winget-manifest
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
 
-PackageIdentifier: PHP.PHP-NTS.8.4
-PackageVersion: 8.4.12
+PackageIdentifier: PHP.PHP-NTS.8.3
+PackageVersion: 8.3.25
 InstallerLocale: en-US
 InstallerType: zip
 NestedInstallerType: portable
@@ -11,20 +11,20 @@ NestedInstallerFiles:
     PortableCommandAlias: php
 Commands:
   - php
-  - php84
+  - php83
 UpgradeBehavior: install
 ReleaseDate: 2025-08-26
 ArchiveBinariesDependOnPath: true
 Installers:
   - Architecture: x64
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.4.12-nts-Win32-vs17-x64.zip
-    InstallerSha256: 9955f021aeca980310e467e168df5c3ae933d99cbb4e4cc7de668558061fdeb3
+    InstallerUrl: https://windows.php.net/downloads/releases/php-8.3.25-nts-Win32-vs16-x64.zip
+    InstallerSha256: 75e1b3751000bc890302519e99a1b115af5bd6986855e9217e87c86fadc3061f
     Dependencies:
       PackageDependencies:
         - PackageIdentifier: Microsoft.VCRedist.2015+.x64
   - Architecture: x86
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.4.12-nts-Win32-vs17-x86.zip
-    InstallerSha256: cdec5781310f55542ceb643282bd10ea06e017801a794072eb90cd4d9459fff5
+    InstallerUrl: https://windows.php.net/downloads/releases/php-8.3.25-nts-Win32-vs16-x86.zip
+    InstallerSha256: cf392367d26179b14db7fd04b73e96261980ccb133bcf547428004f70d586cae
     Dependencies:
       PackageDependencies:
         - PackageIdentifier: Microsoft.VCRedist.2015+.x86
