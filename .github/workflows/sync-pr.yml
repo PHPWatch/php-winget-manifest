@@ -18,26 +18,43 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-24.04
-    name: PHP ${{ matrix.php-version }}
+    name: PHP ${{ matrix.php-version }} - ${{ matrix.ts }}
     strategy:
       max-parallel: 1
       matrix:
-        ts:
-          - nts
-          - ts
         include:
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
+            ts: 'ts'
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
+            ts: 'ts'
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
+            ts: 'ts'
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
+            ts: 'ts'
+          - php-version: '8.1'
+            php-version-major: 8
+            php-version-minor: 1
+            ts: 'nts'
+          - php-version: '8.2'
+            php-version-major: 8
+            php-version-minor: 2
+            ts: 'nts'
+          - php-version: '8.3'
+            php-version-major: 8
+            php-version-minor: 3
+            ts: 'nts'
+          - php-version: '8.4'
+            php-version-major: 8
+            php-version-minor: 4
+            ts: 'nts'
 
     steps:
       - uses: actions/checkout@v4
