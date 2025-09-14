@@ -17,14 +17,14 @@ ReleaseDate: 2025-07-01
 ArchiveBinariesDependOnPath: true
 Installers:
   - Architecture: x64
-    InstallerUrl: https://windows.php.net/downloads/releases/php-8.2.29-nts-Win32-vs16-x64.zip
-    InstallerSha256: 8404a12bd421075060ae9f7ae988777a476807163d9d4c10e1ac55175976f5c0
+    InstallerUrl: https://downloads.php.net/~windows/releases/php-8.2.29-nts-Win32-vs16-x64.zip
+    InstallerSha256: 00ce01ef2d2b4245354ac7cd0cc94e202a908479da4f288b1aa3354176077c44
     Dependencies:
       PackageDependencies:
         - PackageIdentifier: Microsoft.VCRedist.2015+.x64
   - Architecture: x86
     InstallerUrl: https://downloads.php.net/~windows/releases/php-8.2.29-nts-Win32-vs16-x86.zip
-    InstallerSha256: bf88cf1e7303639db234766e9eeae19d6f0760da127d4ccfd88d4a1a412a8f69
+    InstallerSha256: 07611b1c7691ad02fb0ffb323db9f4e065ff53070b62726c5941618941e35f56
     Dependencies:
       PackageDependencies:
         - PackageIdentifier: Microsoft.VCRedist.2015+.x86
