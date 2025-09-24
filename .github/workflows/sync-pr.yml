@@ -18,7 +18,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-24.04
-    name: PHP ${{ matrix.php-version }} - ${{ matrix.ts }}
+    name: PHP ${{ matrix.php-version }}${{ matrix.ts }}
     strategy:
       max-parallel: 1
       matrix:
@@ -26,35 +26,35 @@ jobs:
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
-            ts: 'ts'
+            ts: ''
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
-            ts: 'ts'
+            ts: ''
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
-            ts: 'ts'
+            ts: ''
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
-            ts: 'ts'
+            ts: ''
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
-            ts: 'nts'
+            ts: '-NTS'
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
-            ts: 'nts'
+            ts: '-NTS'
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
-            ts: 'nts'
+            ts: '-NTS'
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
-            ts: 'nts'
+            ts: '-NTS'
 
     steps:
       - uses: actions/checkout@v4
@@ -104,14 +104,14 @@ jobs:
 
       - name: "List dirs: Upstream"
         if: contains('none', steps.version_update.outputs.new_version) == false
-        run: find winget-pkgs/manifests/p/PHP/PHP | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
+        run: find winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }} | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
 
       - uses: actions/attest-build-provenance@v2.1.0
         if: contains('none', steps.version_update.outputs.new_version) == false
         id: attest
         name: Attest manifest file
         with:
-          subject-path: builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+          subject-path: builder/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
 
       - name: Add attest information
         if: contains('none', steps.version_update.outputs.new_version) == false
@@ -143,8 +143,8 @@ jobs:
       - name: Remove old files from winget-pkgs
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: |
-          rm -r winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
-          cp -r builder/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+          rm -r winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+          cp -r builder/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
 
       - name: Fast-forward own repo
         if: contains('none', steps.version_update.outputs.new_version) == false
@@ -161,7 +161,7 @@ jobs:
           branch: main
           add_options: '-A'
           repository: builder
-          tagging_message: ${{ steps.version_update.outputs.new_version }}
+          tagging_message: ${{ steps.version_update.outputs.new_version }}-${{ matrix.ts }}
 
       - name: Create Pull Request
         id: create_pr
@@ -171,9 +171,9 @@ jobs:
           token: ${{ secrets.PKGS_TOKEN }}
           path: "winget-pkgs"
           body-path: builder/winget-pr-template.md
-          add-paths: "manifests/p/PHP/PHP/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}/${{ steps.version_update.outputs.new_version }}"
+          add-paths: "manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}/${{ steps.version_update.outputs.new_version }}"
           commit-message: ${{ steps.commit_msg.outputs.commit_msg }}
-          title: "[PHP] Add new version `PHP.PHP.${{ matrix.php-version-major }}.${{ matrix.php-version-minor }}` - `${{ steps.version_update.outputs.new_version }}`"
+          title: "[PHP] Add new version `PHP.PHP${{ matrix.ts }}.${{ matrix.php-version-major }}.${{ matrix.php-version-minor }}` - `${{ steps.version_update.outputs.new_version }}`"
           committer: "Ayesh Karunaratne <ayesh@aye.sh>"
           author: "Ayesh Karunaratne <ayesh@aye.sh>"
           branch: "php-v-${{ steps.version_update.outputs.new_version }}"
