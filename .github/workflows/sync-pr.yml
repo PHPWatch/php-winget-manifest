@@ -42,19 +42,19 @@ jobs:
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
-            ts: 'NTS'
+            ts: '/NTS'
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
-            ts: 'NTS'
+            ts: '/NTS'
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
-            ts: 'NTS'
+            ts: '/NTS'
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
-            ts: 'NTS'
+            ts: '/NTS'
 
     steps:
       - uses: actions/checkout@v4
@@ -73,6 +73,9 @@ jobs:
             echo "new_version=$(cat NEW_VERSION)" >> $GITHUB_OUTPUT
           else
             echo "new_version=none" >> $GITHUB_OUTPUT
+          fi
+          if [[ -f "NEW_TAG" ]]; then
+            echo "new_tag=$(cat NEW_TAG)" >> $GITHUB_OUTPUT
           fi
 
       - name: Add job summary when new releases are found
@@ -161,7 +164,7 @@ jobs:
           branch: main
           add_options: '-A'
           repository: builder
-          tagging_message: ${{ steps.version_update.outputs.new_version }}-${{ matrix.ts }}
+          tagging_message: ${{ steps.version_update.outputs.new_tag }}
 
       - name: Create Pull Request
         id: create_pr
