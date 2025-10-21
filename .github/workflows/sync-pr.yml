@@ -42,19 +42,19 @@ jobs:
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
-            ts: '.NTS'
+            ts: 'NTS'
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
-            ts: '.NTS'
+            ts: 'NTS'
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
-            ts: '.NTS'
+            ts: 'NTS'
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
-            ts: '.NTS'
+            ts: 'NTS'
 
     steps:
       - uses: actions/checkout@v4
@@ -143,8 +143,8 @@ jobs:
       - name: Remove old files from winget-pkgs
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: |
-          rm -r winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
-          cp -r builder/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+          rm -r winget-pkgs/manifests/p/PHP/PHP/${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
+          cp -r builder/manifests/p/PHP/PHP/${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }} winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }}/${{ matrix.php-version-major }}/${{ matrix.php-version-minor }}
 
       - name: Fast-forward own repo
         if: contains('none', steps.version_update.outputs.new_version) == false

@@ -235,7 +235,7 @@ $ver = $argv[1];
 $ts = true;
 
 if (isset($argv[2])) {
-    if ($argv[2] === '.NTS') {
+    if ($argv[2] === 'NTS') {
         $argv[2] = 'nts';
     }
     if ($argv[2] !== 'ts' && $argv[2] !== 'nts') {
