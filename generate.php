@@ -54,9 +54,13 @@ final class ManifestGenerator {
     public function setNewVersionToEnv(): void {
         if ($this->newVersion) {
             putenv('PHP_NEW_VERSION=' . $this->version);
+            putenv('PHP_NEW_TAG=' . $this->version . '-' . $this->threadSafety ? 'ts' : 'nts');
+            putenv('PHP_PACKAGE_NAME=' . 'PHP.PHP' . ($this->threadSafety ? '' : '.NTS') . '.' . $this->version);
         }
         else {
             putenv('PHP_NEW_VERSION=0');
+            putenv('PHP_NEW_TAG=0');
+            putenv('PHP_PACKAGE_NAME=0');
         }
     }
 
@@ -143,7 +147,7 @@ final class ManifestGenerator {
         $folder = strtr(
             $folder,
             $replacements + [
-                '(ts)' => $this->threadSafety ? 'PHP' : 'PHP.NTS',
+                '(ts)' => $this->threadSafety ? 'PHP' : 'PHP/NTS',
             ]
         );
 
@@ -184,12 +188,21 @@ final class ManifestGenerator {
         }
     }
 
-    public function saveNewVersionToFile(string $file): void {
-        if (file_exists($file)) {
-            unlink($file);
+    public function saveNewVersionToFile(string $versionFile, string $tagFile, string $packageFile): void {
+        if (file_exists($versionFile)) {
+            unlink($versionFile);
+        }
+        if (file_exists($tagFile)) {
+            unlink($tagFile);
+        }
+        if (file_exists($packageFile)) {
+            unlink($packageFile);
         }
         if ($this->newVersion) {
-            file_put_contents($file, $this->newVersion);
+            var_dump($this->newVersion, $this->version);
+            file_put_contents($versionFile, $this->newVersion);
+            file_put_contents($tagFile, $this->newVersion . '-' . ($this->threadSafety ? 'ts' : 'nts'));
+            file_put_contents($packageFile, 'PHP.PHP' . ($this->threadSafety ? '' : '.NTS') . '.' . $this->version);
         }
     }
 
@@ -235,7 +248,7 @@ $ver = $argv[1];
 $ts = true;
 
 if (isset($argv[2])) {
-    if ($argv[2] === 'NTS') {
+    if ($argv[2] === '/NTS') {
         $argv[2] = 'nts';
     }
     if ($argv[2] !== 'ts' && $argv[2] !== 'nts') {
@@ -251,7 +264,7 @@ try {
     $runner->run();
     $runner->showNewVersion();
     $runner->setNewVersionToEnv();
-    $runner->saveNewVersionToFile(__DIR__ . '/NEW_VERSION');
+    $runner->saveNewVersionToFile(__DIR__ . '/NEW_VERSION', __DIR__ . '/NEW_TAG', __DIR__ . '/PACKAGE_NAME');
 }
 catch (\Exception $exception) {
     echo $exception->getMessage();
