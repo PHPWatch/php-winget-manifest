@@ -42,19 +42,19 @@ jobs:
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
-            ts: '-NTS'
+            ts: '.NTS'
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
-            ts: '-NTS'
+            ts: '.NTS'
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
-            ts: '-NTS'
+            ts: '.NTS'
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
-            ts: '-NTS'
+            ts: '.NTS'
 
     steps:
       - uses: actions/checkout@v4

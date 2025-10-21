@@ -134,7 +134,7 @@ final class ManifestGenerator {
             '%versionmin%' => str_replace('.', '', $this->version),
             '%versionmajor%' => $versionParts[0],
             '%versionminor%' => $versionParts[1],
-            '%ts%' => $this->threadSafety ? 'PHP' : 'PHP-NTS',
+            '%ts%' => $this->threadSafety ? 'PHP' : 'PHP.NTS',
             '%ts-suffix%' => $this->threadSafety ? '' : ' - Non-thread safe',
         ];
 
@@ -143,7 +143,7 @@ final class ManifestGenerator {
         $folder = strtr(
             $folder,
             $replacements + [
-                '(ts)' => $this->threadSafety ? 'PHP' : 'PHP-NTS',
+                '(ts)' => $this->threadSafety ? 'PHP' : 'PHP.NTS',
             ]
         );
 
@@ -171,7 +171,7 @@ final class ManifestGenerator {
                 $targetFile,
                 $replacements + [
                     '(version)' => $this->version,
-                    '(ts)' => $this->threadSafety ? 'PHP' : 'PHP-NTS',
+                    '(ts)' => $this->threadSafety ? 'PHP' : 'PHP.NTS',
                 ]
             );
 
@@ -235,7 +235,7 @@ $ver = $argv[1];
 $ts = true;
 
 if (isset($argv[2])) {
-    if ($argv[2] === '-NTS') {
+    if ($argv[2] === '.NTS') {
         $argv[2] = 'nts';
     }
     if ($argv[2] !== 'ts' && $argv[2] !== 'nts') {
