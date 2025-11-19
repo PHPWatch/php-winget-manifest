@@ -27,33 +27,45 @@ jobs:
             php-version-major: 8
             php-version-minor: 1
             ts: ''
-          - php-version: '8.2'
-            php-version-major: 8
-            php-version-minor: 2
-            ts: ''
-          - php-version: '8.3'
-            php-version-major: 8
-            php-version-minor: 3
-            ts: ''
-          - php-version: '8.4'
-            php-version-major: 8
-            php-version-minor: 4
-            ts: ''
           - php-version: '8.1'
             php-version-major: 8
             php-version-minor: 1
             ts: '/NTS'
+
+          - php-version: '8.2'
+            php-version-major: 8
+            php-version-minor: 2
+            ts: ''
           - php-version: '8.2'
             php-version-major: 8
             php-version-minor: 2
             ts: '/NTS'
+
+          - php-version: '8.3'
+            php-version-major: 8
+            php-version-minor: 3
+            ts: ''
           - php-version: '8.3'
             php-version-major: 8
             php-version-minor: 3
             ts: '/NTS'
+
           - php-version: '8.4'
             php-version-major: 8
             php-version-minor: 4
+            ts: ''
+          - php-version: '8.4'
+            php-version-major: 8
+            php-version-minor: 4
+            ts: '/NTS'
+
+          - php-version: '8.5'
+            php-version-major: 8
+            php-version-minor: 5
+            ts: ''
+          - php-version: '8.5'
+            php-version-major: 8
+            php-version-minor: 5
             ts: '/NTS'
 
     steps:
