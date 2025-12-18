@@ -69,7 +69,7 @@ jobs:
             ts: '/NTS'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           path: builder
           ref: 'main'
@@ -99,7 +99,7 @@ jobs:
           echo 'No new releases found.' >> $GITHUB_STEP_SUMMARY
 
       - name: Clone PHPWatch/winget-pkgs
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
           repository: PHPWatch/winget-pkgs
@@ -124,7 +124,7 @@ jobs:
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: find winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }} | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
 
-      - uses: actions/attest-build-provenance@v2.1.0
+      - uses: actions/attest-build-provenance@v3
         if: contains('none', steps.version_update.outputs.new_version) == false
         id: attest
         name: Attest manifest file
@@ -172,7 +172,7 @@ jobs:
           cd ../
 
       - name: Commit data to own repo
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7.1
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
           commit_message: ${{ steps.commit_msg.outputs.commit_msg }}
@@ -183,7 +183,7 @@ jobs:
 
       - name: Create Pull Request
         id: create_pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
           token: ${{ secrets.PKGS_TOKEN }}
