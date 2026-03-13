@@ -11,6 +11,9 @@ final class ManifestGenerator {
 
     private readonly bool $threadSafety;
     private readonly string $version;
+	
+	private const string MANIFEST_VERSION = '1.12.0';
+	private const string MANIFEST_VERSION_MINI = '1.12';
 
     public static function getHelp(): string {
         $help = [];
@@ -140,6 +143,8 @@ final class ManifestGenerator {
             '%versionminor%' => $versionParts[1],
             '%ts%' => $this->threadSafety ? 'PHP' : 'PHP.NTS',
             '%ts-suffix%' => $this->threadSafety ? '' : ' - Non-thread safe',
+            '%manifest-version-small%' => self::MANIFEST_VERSION_MINI,
+            '%manifest-version%' => self::MANIFEST_VERSION,
         ];
 
         // manifests/p/PHP/PHP/8/3/8.3.14/PHP.PHP.8.3.installer.yaml
