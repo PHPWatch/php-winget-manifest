@@ -1,0 +1,32 @@
+# Created with PHPWatch/winget-pkgs - https://github.com/PHPWatch/php-winget-manifest
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.12.0.schema.json
+
+PackageIdentifier: PHP.PHP.8.5
+PackageVersion: 8.5.5
+InstallerLocale: en-US
+InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: php.exe
+    PortableCommandAlias: php
+Commands:
+  - php
+  - php85
+UpgradeBehavior: install
+ReleaseDate: 2026-04-07
+ArchiveBinariesDependOnPath: true
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://downloads.php.net/~windows/releases/php-8.5.5-Win32-vs17-x64.zip
+    InstallerSha256: b4099a15cd3fc797d007282fff793ebbd65127cb2a9caf5c7eb9254c30b95098
+    Dependencies:
+      PackageDependencies:
+        - PackageIdentifier: Microsoft.VCRedist.2015+.x64
+  - Architecture: x86
+    InstallerUrl: https://downloads.php.net/~windows/releases/php-8.5.5-Win32-vs17-x86.zip
+    InstallerSha256: a3c0c41887d4b1e92fadccb8eac3dbe5888afd9b5de1cbaa7ec18afd1515a30a
+    Dependencies:
+      PackageDependencies:
+        - PackageIdentifier: Microsoft.VCRedist.2015+.x86
+ManifestType: installer
+ManifestVersion: 1.12.0
