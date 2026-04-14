@@ -117,11 +117,11 @@ final class ManifestGenerator {
         }
 
         $return['x64'] = [
-            'url' => 'https://downloads.php.net/~windows/releases/' . $parsedReleases['x64']->zip->path,
+            'url' => 'https://downloads.php.net/~windows/releases/archives/' . $parsedReleases['x64']->zip->path,
             'hash' => $parsedReleases['x64']->zip->sha256,
         ];
         $return['x86'] = [
-            'url' => 'https://downloads.php.net/~windows/releases/' . $parsedReleases['x86']->zip->path,
+            'url' => 'https://downloads.php.net/~windows/releases/archives/' . $parsedReleases['x86']->zip->path,
             'hash' => $parsedReleases['x86']->zip->sha256,
         ];
 
