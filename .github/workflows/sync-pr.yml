@@ -4,6 +4,7 @@ permissions:
   contents: write
   id-token: write
   attestations: write
+  artifact-metadata: write
 
 on:
   workflow_dispatch:
@@ -17,7 +18,7 @@ concurrency:
 
 jobs:
   run:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     name: PHP ${{ matrix.php-version }}${{ matrix.ts }}
     strategy:
       max-parallel: 1
@@ -69,8 +70,9 @@ jobs:
             ts: '/NTS'
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
+          persist-credentials: true
           path: builder
           ref: 'main'
 
@@ -99,9 +101,10 @@ jobs:
           echo 'No new releases found.' >> $GITHUB_STEP_SUMMARY
 
       - name: Clone PHPWatch/winget-pkgs
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         if: contains('none', steps.version_update.outputs.new_version) == false
         with:
+          persist-credentials: true
           repository: PHPWatch/winget-pkgs
           path: winget-pkgs
           token: ${{ secrets.PKGS_TOKEN }}
@@ -124,7 +127,7 @@ jobs:
         if: contains('none', steps.version_update.outputs.new_version) == false
         run: find winget-pkgs/manifests/p/PHP/PHP${{ matrix.ts }} | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/"
 
-      - uses: actions/attest-build-provenance@v3
+      - uses: actions/attest@v4
         if: contains('none', steps.version_update.outputs.new_version) == false
         id: attest
         name: Attest manifest file
