@@ -1,0 +1,32 @@
+# Created with PHPWatch/winget-pkgs - https://github.com/PHPWatch/php-winget-manifest
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.12.0.schema.json
+
+PackageIdentifier: PHP.PHP.NTS.8.2
+PackageVersion: 8.2.35-1
+InstallerLocale: en-US
+InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+  - RelativeFilePath: php.exe
+    PortableCommandAlias: php
+Commands:
+  - php
+  - php82
+UpgradeBehavior: install
+ReleaseDate: 2026-10-26
+ArchiveBinariesDependOnPath: true
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://downloads.php.net/~windows/releases/php-8.2.35-1-nts-Win32-vs16-x64.zip
+    InstallerSha256: ebe75134c03869826cb1714d31fd5eb96afefa6d9fd35d786971c03020e7bce2
+    Dependencies:
+      PackageDependencies:
+        - PackageIdentifier: Microsoft.VCRedist.2015+.x64
+  - Architecture: x86
+    InstallerUrl: https://downloads.php.net/~windows/releases/php-8.2.35-1-nts-Win32-vs16-x86.zip
+    InstallerSha256: 2e45d8a53405ba9e5fe0c95a231fcc6df06787a6ce80e8d49dc538fd670accf9
+    Dependencies:
+      PackageDependencies:
+        - PackageIdentifier: Microsoft.VCRedist.2015+.x86
+ManifestType: installer
+ManifestVersion: 1.12.0
